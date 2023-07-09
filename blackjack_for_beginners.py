@@ -1,0 +1,500 @@
+from random import randrange
+from time import sleep
+from math import *
+
+spade = ['SA', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'SJ', 'SQ', 'SK']
+heart = ['HA', 'H2', 'H3', 'H4', 'H5', 'H6', 'H7', 'H8', 'H9', 'H10', 'HJ', 'HQ', 'HK']
+diamond = ['DA', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'D8', 'D9', 'D10', 'DJ', 'DQ', 'DK']
+club = ['CA', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'CJ', 'CQ', 'CK']
+
+cardArr = ['에이스', 2, 3, 4, 5, 6, 7, 8, 9, '잭', '퀸', '킹']
+
+cards = spade + heart + diamond + club
+
+playerCards = []
+computerCards = []
+
+playerLeftMoney = 100
+
+repeat = 1
+repeatRequest = input('몇판 하시겠습니까? ')
+
+while repeatRequest == None:
+    print('아무것도 입력하수는 없습니다!')
+    repeatRequest = input('몇판 하시겠습니까? ')
+
+try:
+    repeatRequest = int(repeatRequest)
+except:
+    repeatRequest = None
+
+while repeatRequest == None:
+    print('숫자로 입력해주세요!')
+    repeatRequest = input('몇판 하시겠습니까? ')
+    try:
+        repeatRequest = int(repeatRequest)
+    except:
+        repeatRequest = None
+while repeatRequest < 1:
+    print('적어도 1판은 해야합니다!')
+    repeatRequest = input('몇판 하시겠습니까? ')
+    try:
+        repeatRequest = int(repeatRequest)
+    except:
+        repeatRequest = None
+
+while repeat <= repeatRequest:
+    repeat += 1
+    if len(cards) <= 9:
+        print('적어도 게임을 진행하려면 카드가 10개 필요합니다!')
+        resetCardDeck = input('다시 덱을 초기화 할까요? (예/아니오) ')
+        while resetCardDeck == None:
+            print('아무것도 입력할수는 없습니다!')
+            resetCardDeck = input('다시 덱을 초기화 할까요? (예/아니오) ')
+        while resetCardDeck != '예' and resetCardDeck != '아니오':
+            print(f'{resetCardDeck}이(가) 아닌 (예/아니오)를 입력해주세요!')
+            resetCardDeck = input('다시 덱을 초기화 할까요? (예/아니오) ')
+        if resetCardDeck == '예':
+            cards = []
+            cards = spade + heart + diamond + club
+            print('덱을 초기화 했습니다.')
+        else:
+            print('알겠습니다. 게임을 종료하겠습니다.')
+            break
+
+    playerCards = []
+    computerCards = []
+    defaultPlayerMoney = 100
+    playerBet = input('얼마나 거시겠습니까? ')
+
+    sumOfCard = 0
+    sumOfComputerCard = 0
+
+    while playerBet == None:
+        print('아무것도 입력할수는 없습니다!')
+        playerBet = input('얼마나 거시겠습니까? ')
+    try:
+        playerBet = int(playerBet)
+    except:
+        playerBet = None
+    """
+    while playerBet > defaultPlayerMoney:
+        print(f'기본 지급 금액인 {defaultPlayerMoney}보다 더 높게 걸 수 없습니다!')
+        playerBet = int(input('얼마나 거시겠습니까? '))
+        try:
+            playerBet = int(playerBet)
+        except:
+            playerBet = None
+    """
+    while int(playerBet) < 1:
+        while playerBet == None:
+            print('아무것도 입력할수는 없습니다!')
+            playerBet = input('얼마나 거시겠습니까? ')
+        try:
+            playerBet = int(playerBet)
+        except:
+            playerBet = None
+        print(f'적어도 1이상은 걸어야 합니다!')
+        playerBet = input('얼마나 거시겠습니까? ')
+        try:
+            playerBet = int(playerBet)
+        except:
+            playerBet = None
+    while int(playerBet) > 200:
+        while playerBet == None:
+            print('아무것도 입력할수는 없습니다!')
+            playerBet = input('얼마나 거시겠습니까? ')
+        try:
+            playerBet = int(playerBet)
+        except:
+            playerBet = None
+        print(f'200 이상으로는 걸수 없습니다!')
+        playerBet = input('얼마나 거시겠습니까? ')
+        try:
+            playerBet = int(playerBet)
+        except:
+            playerBet = None
+    playerLeftMoney -= playerBet
+    if playerLeftMoney < defaultPlayerMoney:
+        print(f'현재 남은 돈 : \033[31m{playerLeftMoney}\033[0m')
+    else:
+        if playerLeftMoney == defaultPlayerMoney:
+            print(f'현재 남은 돈 : \033[32m{playerLeftMoney}\033[0m')
+        elif playerLeftMoney > defaultPlayerMoney:
+            if playerLeftMoney > 500:
+                print(f'현재 남은 돈 : \033[36m{playerLeftMoney}\033[0m')
+            elif playerLeftMoney > 400:
+                print(f'현재 남은 돈 : \033[35m{playerLeftMoney}\033[0m')
+            elif playerLeftMoney > 300:
+                print(f'현재 남은 돈 : \033[34m{playerLeftMoney}\033[0m')
+            elif playerLeftMoney > 200:
+                print(f'현재 남은 돈 : \033[92m{playerLeftMoney}\033[0m')
+            elif playerLeftMoney > 150:
+                print(f'현재 남은 돈 : \033[33m{playerLeftMoney}\033[0m')
+            
+    for _ in range(2):
+        a = None
+        a = cards[randrange(0, len(cards))]
+        computerCards.append(a)
+        cards.remove(a)
+
+    print('딜러의 카드는 ', end = '')
+
+    for i in computerCards:
+        kindOfComputerCard = ''
+        numberOfComputerCard = ''
+
+        if i[0] == 'S':
+            kindOfComputerCard = '스페이드'
+        elif i[0] == 'H':
+            kindOfComputerCard = '하트'
+        elif i[0] == 'D':
+            kindOfComputerCard = '다이아몬드'
+        elif i[0] == 'C':
+            kindOfComputerCard = '클럽'
+
+        checker = 0
+        try:
+            checker = int(i[1:])
+        except:
+            checker = -1
+    
+        if checker >= 1:
+            numberOfComputerCard = i[1]
+            sumOfComputerCard += checker
+        elif i[1] == 'A':
+            numberOfComputerCard = '에이스'
+        
+            if sumOfComputerCard <= 10:
+                sumOfComputerCard += 11
+            else:
+                sumOfComputerCard += 1
+        elif i[1] == 'J':
+            numberOfComputerCard = '잭'
+            sumOfComputerCard += 10
+        elif i[1] == 'Q':
+            numberOfComputerCard = '퀸'
+            sumOfComputerCard += 10
+        elif i[1] == 'K':
+            numberOfComputerCard = '킹'
+            sumOfComputerCard += 10
+    
+        if not i == computerCards[1]:
+            print(f'첫 번째 딜러의 카드는 {kindOfComputerCard} {numberOfComputerCard}, 딜러의 카드의 합은 {sumOfComputerCard}입니다.')
+
+    playerBlackJack = False
+    playerBust = False
+    computerBust = False
+    computerBlackJack = False
+
+    for _ in range(2):
+        a = None
+        a = cards[randrange(0, len(cards))]
+        playerCards.append(a)
+        cards.remove(a)
+
+    print('당신의 카드는 ', end = '')
+
+    sumOfCard = 0
+
+    for i in playerCards:
+        kindOfCard = ''
+        numberOfCard = ''
+
+        if i[0] == 'S':
+            kindOfCard = '스페이드'
+        elif i[0] == 'H':
+            kindOfCard = '하트'
+        elif i[0] == 'D':
+            kindOfCard = '다이아몬드'
+        elif i[0] == 'C':
+            kindOfCard = '클럽'
+
+        checker = 0
+        try:
+            checker = int(i[1:])
+        except:
+            checker = -1
+        
+        if checker >= 1:
+            numberOfCard = i[1]
+            sumOfCard += checker
+        elif i[1] == 'A':
+            numberOfCard = '에이스'
+            
+            if sumOfCard + 11 <= 21:
+                sumOfCard += 11
+            else:
+                sumOfCard += 1
+        elif i[1] == 'J':
+            numberOfCard = '잭'
+            sumOfCard += 10
+        elif i[1] == 'Q':
+            numberOfCard = '퀸'
+            sumOfCard += 10
+        elif i[1] == 'K':
+            numberOfCard = '킹'
+            sumOfCard += 10
+        
+        if i == playerCards[1]:
+            print(f'{kindOfCard} {numberOfCard}으로 당신의 카드의 합은 {sumOfCard}입니다.')
+        else:
+            print(f'{kindOfCard} {numberOfCard}, ', end = '')
+
+    if sumOfCard == 21:
+        print(f'\033[32m블랙잭\033[0m! 딜러의 카드를 기다리십시오!')
+        playerBlackJack = True
+    else:
+        decide = input('어떻게 하실겁니까? (히트, 더블 다운, 스탠드(혹은 스테이)) ')
+        while decide == None:
+            print('아무것도 입력할수는 없습니다!')
+            decide = input('어떻게 하실겁니까? (히트, 더블 다운, 스탠드(혹은 스테이)) ')
+        while decide != '히트' and decide != '더블 다운' and decide != '스탠드' and decide != '스테이':
+            print(f'{decide}은(는) 선택할 수 없습니다!')
+            decide = input('어떻게 하실겁니까? (히트, 더블 다운, 스탠드(혹은 스테이)) ')
+        if decide == '스탠드' or decide == '스테이':
+            pass
+        elif decide == '더블 다운':
+            a = None
+            a = cards[randrange(0, len(cards))]
+            playerCards.append(a)
+            cards.remove(a)
+
+            kindOfCard = ''
+            numberOfCard = ''
+
+            i = a
+
+            if i[0] == 'S':
+                kindOfCard = '스페이드'
+            elif i[0] == 'H':
+                kindOfCard = '하트'
+            elif i[0] == 'D':
+                kindOfCard = '다이아몬드'
+            elif i[0] == 'C':
+                kindOfCard = '클럽'
+
+            checker = 0
+            try:
+                checker = int(i[1:])
+            except:
+                checker = -1
+        
+            if checker > -1:
+                numberOfCard = i[1]
+                sumOfCard += checker
+            elif i[1] == 'A':
+                numberOfCard = '에이스'
+                
+                if sumOfCard + 11 <= 21:
+                    sumOfCard += 11
+                else:
+                    sumOfCard += 1
+            elif i[1] == 'J':
+                numberOfCard = '잭'
+                sumOfCard += 10
+            elif i[1] == 'Q':
+                numberOfCard = '퀸'
+                sumOfCard += 10
+            elif i[1] == 'K':
+                numberOfCard = '킹'
+                sumOfCard += 10
+            if playerBet * 2 > 200:
+                print(f'더블 다운을 당신이 걸었던 돈이 \033[34m{playerBet}\033[0m에서 \033[91m{playerBet * 2}\033[0m이 되었습니다!')
+            elif playerBet * 2 > 300:
+                print(f'더블 다운을 당신이 걸었던 돈이 \033[34m{playerBet}\033[0m에서 \033[31m{playerBet * 2}\033[0m이 되었습니다!')
+            else:
+                print(f'당신이 걸었던 돈이 \033[34m{playerBet}\033[0m에서 \033[36m{playerBet * 2}\033[0m이 되었습니다!')
+            print(f'더블 다운을해 {kindOfCard} {numberOfCard}이(가) 나왔습니다. 당신의 카드의 합은 {sumOfCard}이 됩니다.')
+            playerBet *= 2
+            playerLeftMoney -= playerBet // 2
+            if playerLeftMoney < defaultPlayerMoney:
+                print(f'현재 남은 돈 : \033[31m{playerLeftMoney}\033[0m')
+            else:
+                if playerLeftMoney == defaultPlayerMoney:
+                    print(f'현재 남은 돈 : \033[32m{playerLeftMoney}\033[0m')
+                elif playerLeftMoney > defaultPlayerMoney:
+                    if playerLeftMoney > 500:
+                        print(f'현재 남은 돈 : \033[36m{playerLeftMoney}\033[0m')
+                    elif playerLeftMoney > 400:
+                        print(f'현재 남은 돈 : \033[35m{playerLeftMoney}\033[0m')
+                    elif playerLeftMoney > 300:
+                        print(f'현재 남은 돈 : \033[34m{playerLeftMoney}\033[0m')
+                    elif playerLeftMoney > 200:
+                        print(f'현재 남은 돈 : \033[92m{playerLeftMoney}\033[0m')
+                    elif playerLeftMoney > 150:
+                        print(f'현재 남은 돈 : \033[33m{playerLeftMoney}\033[0m')
+                    
+            if sumOfCard > 21:
+                print(f'\033[31m버스트! 당신의 카드의 합인 {sumOfCard}이(가) 21을 초과했습니다!\033[0m')
+                playerBust = True
+            elif sumOfCard == 21:
+                print(f'\033[32m21\033[0m! 이제 딜러의 카드를 기다리십시오!')
+        elif decide == '히트':
+            hitDecide = '예'    
+            while hitDecide == '예':
+                a = None
+                a = cards[randrange(0, len(cards))]
+                playerCards.append(a)
+                cards.remove(a)
+
+                kindOfCard = ''
+                numberOfCard = ''
+
+                i = a
+
+                if i[0] == 'S':
+                    kindOfCard = '스페이드'
+                elif i[0] == 'H':
+                    kindOfCard = '하트'
+                elif i[0] == 'D':
+                    kindOfCard = '다이아몬드'
+                elif i[0] == 'C':
+                    kindOfCard = '클럽'
+
+                checker = 0
+                try:
+                    checker = int(i[1:])
+                except:
+                    checker = -1
+        
+                if checker > -1:
+                    numberOfCard = i[1]
+                    sumOfCard += checker
+                elif i[1] == 'A':
+                    numberOfCard = '에이스'
+                    
+                    if sumOfCard + 11 <= 21:
+                        sumOfCard += 11
+                    else:
+                        sumOfCard += 1
+                elif i[1] == 'J':
+                    numberOfCard = '잭'
+                    sumOfCard += 10
+                elif i[1] == 'Q':
+                    numberOfCard = '퀸'
+                    sumOfCard += 10
+                elif i[1] == 'K':
+                    numberOfCard = '킹'
+                    sumOfCard += 10
+
+                print(f'히트를해 {kindOfCard} {numberOfCard}이(가) 나왔습니다. 당신의 카드의 합은 {sumOfCard}이 됩니다.')
+                if sumOfCard > 21:
+                    print(f'\033[31m버스트! 당신의 카드의 합인 {sumOfCard}이(가) 21을 초과했습니다!\033[0m')
+                    playerBust = True
+                    break
+                elif sumOfCard == 21:
+                    print(f'\033[32m21\033[0m! 이제 딜러의 카드를 기다리십시오!')
+                    break
+                else:
+                    hitDecide = input('더 하시겠습니까? (예/아니오) ')
+                    while hitDecide == None:
+                        print('아무것도 입력할수는 없습니다!')
+                        hitDecide = input('더 하시겠습니까? (예/아니오) ')
+                    while hitDecide != '예' and hitDecide != '아니오':
+                        print(f'{hitDecide}이(가) 아닌 (예/아니오)를 입력해주세요!')
+                        hitDecide = input('더 하시겠습니까? (예/아니오) ')
+
+    print(f'딜러의 나머지 카드는 {kindOfComputerCard} {numberOfComputerCard}으로, 합은 {sumOfComputerCard}입니다.')
+    if sumOfComputerCard == 21:
+        print(f'\033[31m딜러의 블랙잭\033[0m!')
+        computerBlackJack = True
+    else:
+        # 16 이하면 무조건 히트, 17 이상이면 무조건 스탠드
+        while sumOfComputerCard <= 16:
+            a = None
+            a = cards[randrange(0, len(cards))]
+            computerCards.append(a)
+            cards.remove(a)
+
+            i = a
+
+            kindOfComputerCard = ''
+            numberOfComputerCard = ''
+
+            if i[0] == 'S':
+                kindOfComputerCard = '스페이드'
+            elif i[0] == 'H':
+                kindOfComputerCard = '하트'
+            elif i[0] == 'D':
+                kindOfComputerCard = '다이아몬드'
+            elif i[0] == 'C':
+                kindOfComputerCard = '클럽'
+
+            checker = 0
+            try:
+                checker = int(i[1:])
+            except:
+                checker = -1
+        
+            if checker > -1:
+                numberOfComputerCard = i[1]
+                sumOfComputerCard += checker
+            elif i[1] == 'A':
+                numberOfComputerCard = '에이스'
+                
+                if sumOfComputerCard + 11 <= 21:
+                    sumOfComputerCard += 11
+                else:
+                    sumOfComputerCard += 1
+            elif i[1] == 'J':
+                numberOfComputerCard = '잭'
+                sumOfComputerCard += 10
+            elif i[1] == 'Q':
+                numberOfComputerCard = '퀸'
+                sumOfComputerCard += 10
+            elif i[1] == 'K':
+                numberOfComputerCard = '킹'
+                sumOfComputerCard += 10
+            
+            print(f'딜러가 히트를해 {kindOfComputerCard} {numberOfComputerCard}이(가) 나왔습니다. 딜러의 카드의 합은 {sumOfComputerCard}입니다.')
+            if sumOfComputerCard > 21:
+                print('\033[32m딜러의 버스트\033[0m!')
+                computerBust = True
+                break
+            elif sumOfComputerCard == 21:
+                print('\033[31m딜러의 21\033[0m!')
+            sleep(2)
+    
+    if playerBlackJack and computerBlackJack:
+        print('플레이어와 딜러의 블랙잭, 걸었던 돈을 돌려드립니다.')
+        playerLeftMoney += playerBet
+    elif not playerBlackJack and computerBlackJack:
+        print('\033[31딜러의 블랙잭\033[0m으로 돌려받는 돈은 없습니다...')
+    elif playerBlackJack and not computerBlackJack:
+        print('\033[32m플레이어의 블랙잭\033[0m! 걸었던 돈의 \033[34m2.5배\033[0m를 반올림 한 돈을 돌려드리겠습니다!')
+        playerLeftMoney += round(playerBet * 2.5)
+    elif computerBust and playerBust:
+        print('\033[31m플레이어와 딜러 양측의 버스트\033[0m! 돌려받는 돈은 없습니다...')
+    elif computerBust and not playerBust:
+        print('\033[32m플레이어의 승리\033[0m! 걸었던 돈의 \033[36m2배\033[0m를 돌려드리겠습니다!')
+        playerLeftMoney += playerBet * 2
+    elif not computerBust and playerBust:
+        print('\033[31m플레이어의 버스트\033[0m로 돌려받는 돈은 없습니다...')
+    elif sumOfCard > sumOfComputerCard:
+        print('\033[32m플레이어의 승리\033[0m! 걸었던 돈의 \033[36m2배\033[0m를 돌려드리겠습니다!')
+        playerLeftMoney += playerBet * 2
+    elif sumOfCard < sumOfComputerCard:
+        print('\033[31m딜러의 승리\033[0m로 돌려받는 돈은 없습니다...')
+    elif sumOfCard == sumOfComputerCard:
+        print('\033[33m플레이어, 딜러의 무승부\033[0m로 걸었던 돈을 돌려드립니다.')
+        playerLeftMoney += playerBet
+    else:
+        print('?')
+        break
+    if playerLeftMoney < defaultPlayerMoney:
+        print(f'현재 남은 돈 : \033[31m{playerLeftMoney}\033[0m')
+    else:
+        if playerLeftMoney == defaultPlayerMoney:
+            print(f'현재 남은 돈 : \033[33m{playerLeftMoney}\033[0m')
+        elif playerLeftMoney > defaultPlayerMoney:
+            if playerLeftMoney > 500:
+                print(f'현재 남은 돈 : \033[36m{playerLeftMoney}\033[0m')
+            elif playerLeftMoney > 400:
+                print(f'현재 남은 돈 : \033[35m{playerLeftMoney}\033[0m')
+            elif playerLeftMoney > 300:
+                print(f'현재 남은 돈 : \033[34m{playerLeftMoney}\033[0m')
+            elif playerLeftMoney > 200:
+                print(f'현재 남은 돈 : \033[92m{playerLeftMoney}\033[0m')
+            elif playerLeftMoney > 150:
+                print(f'현재 남은 돈 : \033[32m{playerLeftMoney}\033[0m')
