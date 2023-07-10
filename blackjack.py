@@ -1,6 +1,16 @@
 from random import randrange
 from time import sleep
-from blackjackModule import shuffleCard
+# from blackjackModule import shuffleCard
+
+def shuffleCard(list):
+    result = list[:]
+    n = len(result)
+    
+    for i in range(n):
+        randomIndex = randint(i, n - 1)
+        result[i], result[randomIndex] = result[randomIndex], result[i]
+        
+    return result
 
 def printLeftMoney(playerLeftMoney, defaultPlayerMoney):
     if playerLeftMoney < defaultPlayerMoney:
